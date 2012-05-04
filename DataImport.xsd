@@ -1,0 +1,377 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xs:schema id="BrandbankXml" elementFormDefault="qualified" xmlns:xs="http://www.w3.org/2001/XMLSchema" targetNamespace="http://www.brandbank.com/2007/12" xmlns="http://www.brandbank.com/2007/12" attributeFormDefault="unqualified">
+  <xs:complexType name="ProductType">
+    <xs:sequence>
+      <xs:element name="Pack" type="PackType" minOccurs="1" maxOccurs="1" />
+      <xs:any minOccurs="0" maxOccurs="unbounded" processContents="lax" />
+    </xs:sequence>
+    <xs:attribute name="Action" type="ActionType" use="optional" />
+    <xs:attribute name="Language" type="xs:NMTOKEN" fixed="EN" />
+    <xs:attribute name="Country" type="xs:NMTOKEN" fixed="ZE" />
+    <xs:attribute name="VersionDateTime" type="xs:dateTime" use="optional" />
+    <xs:attribute name="ProductStartDateTime" type="xs:dateTime" use="optional" />
+    <xs:attribute name="ProductEndDateTime" type="xs:dateTime" use="optional" />
+  </xs:complexType>
+  <xs:complexType name="PackType">
+    <xs:sequence>
+      <xs:element name="Core" type="CoreType" minOccurs="1" maxOccurs="1" />
+      <xs:element name="ProductGroup" type="ProductGroupType" minOccurs="0" maxOccurs="1" />
+      <xs:element name="Alcohol" type="AlcoholType" minOccurs="0" maxOccurs="1" />
+      <xs:element name="PackSize" type="PackSizeType" minOccurs="0" maxOccurs="1" />
+      <xs:element name="NoOfUnits" type="NoOfUnitsType" minOccurs="0" maxOccurs="1" />
+      <xs:element name="MultPart" type="MultPartType" minOccurs="0" maxOccurs="1" />
+      <xs:element name="MultPack" type="MultPackType" minOccurs="0" maxOccurs="1" />
+      <xs:element name="Ingredients" type="IngredientsType" minOccurs="0" maxOccurs="1" />
+      <xs:element name="Nutrition" type="NutritionType" minOccurs="0" maxOccurs="1" />
+      <xs:element name="Objects" type="ObjectsType" minOccurs="0" maxOccurs="1" />
+      <xs:element name="NumericNutritionValues" type="NutrientValuesType" minOccurs="0" maxOccurs="1" />
+      <xs:element name="ExtendedAttributeValues" type="ExtendedAttributeValuesType" minOccurs="0" maxOccurs="1" />
+      <xs:element name="SimpleTypes" type="SimpleTypesType" minOccurs="0" maxOccurs="1"/>
+      <xs:element name="Resources" type="ResourcesType" minOccurs="0" maxOccurs="1"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:simpleType name="ActionType">
+    <xs:restriction base="xs:positiveInteger">
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:complexType name="CoreType">
+    <xs:sequence>
+      <xs:element name="ProductCode" type="ProductCodeType" minOccurs="1" maxOccurs="unbounded" />
+      <xs:element name="Description" type="xs:string" maxOccurs="1" minOccurs="0" />
+      <xs:element name="Manufacturer" type="ManufacturerType" maxOccurs="1" minOccurs="0" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:simpleType name="DomainType">
+    <xs:restriction base="xs:string">
+      <xs:maxLength value="3" />
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:simpleType name="EanType">
+    <xs:restriction base="xs:string">
+      <xs:pattern value="^\d{8}(\d{5,6})?$" />
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:complexType name="ManufacturerCodeType">
+    <xs:simpleContent>
+      <xs:extension base="xs:string">
+        <xs:attribute name="Domain" type="DomainType" />
+      </xs:extension>
+    </xs:simpleContent>
+  </xs:complexType>
+  <xs:complexType name="ManufacturerNameType">
+    <xs:simpleContent>
+      <xs:extension base="xs:string">
+        <xs:attribute name="Domain" type="DomainType" />
+      </xs:extension>
+    </xs:simpleContent>
+  </xs:complexType>
+  <xs:complexType name="ManufacturerType">
+    <xs:sequence>
+      <xs:element name="ManufacturerCode" type="ManufacturerCodeType" minOccurs="1" maxOccurs="1" />
+      <xs:element name="Name" type="ManufacturerNameType" minOccurs="0" maxOccurs="1" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="ProductCodeType">
+    <xs:simpleContent>
+      <xs:extension base="xs:string">
+        <xs:attribute name="Domain" type="DomainType" />
+      </xs:extension>
+    </xs:simpleContent>
+  </xs:complexType>
+  <xs:complexType name="SpecificationType">
+    <xs:sequence>
+      <xs:element name="DataVersion" type="DataVersionType" />
+      <xs:element name="Message" type="MessageType" />
+      <xs:element name="Product" type="ProductType" minOccurs="0" maxOccurs="unbounded" />
+      <xs:element name="ExtractStatus" type="ExtractStatusType" />
+    </xs:sequence>
+    <xs:attribute name="TimeZone" type="xs:string" />
+  </xs:complexType>
+  <xs:element name="Specification" type="SpecificationType">
+  </xs:element>
+  <xs:complexType name="DataVersionType">
+    <xs:sequence />
+    <xs:attribute name="Number" type="xs:string" />
+  </xs:complexType>
+  <xs:complexType name="MessageType">
+    <xs:simpleContent>
+      <xs:extension base="MessageId">
+        <xs:attribute name="DateTime" type="xs:dateTime" />
+      </xs:extension>
+    </xs:simpleContent>
+  </xs:complexType>
+  <xs:complexType name="ExtractStatusType">
+    <xs:sequence>
+      <xs:element name="ProductCount" type="xs:integer" />
+      <xs:element name="RenderTime" type="xs:string" minOccurs="0" maxOccurs="1" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="ObjectType">
+    <xs:choice>
+      <xs:element name="Inline" type="InlineObjectContentType" />
+      <xs:element name="Url" type="UrlObjectContentType" />
+    </xs:choice>
+    <xs:attribute name="Id" type="xs:positiveInteger" use="required" />
+    <xs:attribute name="Description" type="xs:string" use="required" />
+    <xs:attribute name="MimeType" type="xs:string" use="required" />
+    <xs:attribute name="Width" type="xs:positiveInteger" use="required" />
+    <xs:attribute name="Height" type="xs:positiveInteger" use="required" />
+    <xs:attribute name="SizeInBytes" type="xs:integer" use="optional" />
+    <xs:attribute name="Cropped" type="xs:boolean" use="optional" />
+    <xs:anyAttribute namespace="##any" processContents="skip" />
+  </xs:complexType>
+  <xs:complexType name="ObjectsType">
+    <xs:sequence>
+      <xs:element name="Object" type="ObjectType" maxOccurs="unbounded" minOccurs="0" />
+    </xs:sequence>
+    <xs:attribute name="Message" type="xs:string" />
+  </xs:complexType>
+  <xs:complexType name="ProductGroupType">
+    <xs:sequence>
+      <xs:element name="System" type="SystemType" minOccurs="1" maxOccurs="2" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="SystemType">
+    <xs:sequence>
+      <xs:element name="Level" type="LevelType" minOccurs="0" maxOccurs="3" />
+    </xs:sequence>
+    <xs:attribute name="Domain" type="DomainType" />
+  </xs:complexType>
+  <xs:complexType name="LevelType">
+    <xs:simpleContent>
+      <xs:extension base="xs:string">
+        <xs:attribute name="Order" type="xs:positiveInteger" use="required" />
+        <xs:attribute name="Code" type="xs:string" use="required" />
+      </xs:extension>
+    </xs:simpleContent>
+  </xs:complexType>
+  <xs:complexType name="AlcoholOwnerType">
+    <xs:sequence>
+      <xs:element name="BeverageType" type="xs:string" minOccurs="0" maxOccurs="1" />
+      <xs:element name="AlcoholUnits" type="xs:string" minOccurs="0" maxOccurs="1" />
+      <xs:element name="PercentageAlcohol" type="xs:string" minOccurs="0" maxOccurs="1" />
+      <xs:element name="TastingNotes" type="xs:string" maxOccurs="1" minOccurs="0" />
+      <xs:element name="TasteCategory" type="xs:string" minOccurs="0" maxOccurs="1" />
+      <xs:element name="ServingSuggestion" type="xs:string" minOccurs="0" maxOccurs="1" />
+      <xs:element name="RegionOfOrigin" type="xs:string" maxOccurs="1" minOccurs="0" />
+      <xs:element name="RegionOfOriginLookup" type="xs:string" minOccurs="0" maxOccurs="1" />
+      <xs:element name="CurrentVintage" type="xs:string" minOccurs="0" maxOccurs="1" />
+      <xs:element name="WineColour" type="xs:string" minOccurs="0" maxOccurs="1" />
+      <xs:element name="DefinedArea" type="xs:string" minOccurs="0" maxOccurs="1" />
+      <xs:element name="DefinedAreaLookup" type="xs:string" minOccurs="0" maxOccurs="1" />
+      <xs:element name="Producer" type="xs:string" minOccurs="0" maxOccurs="1" />
+      <xs:element name="LegalDesignation" type="xs:string" minOccurs="0" maxOccurs="1" />
+      <xs:element name="GrapeVariety" type="xs:string" minOccurs="0" maxOccurs="1" />
+      <xs:element name="Blend" type="xs:string" minOccurs="0" maxOccurs="1" />
+      <xs:element name="TypeOfClosure" type="xs:string" minOccurs="0" maxOccurs="1" />
+      <xs:element name="ExclusiveTo" type="AlcoholExclusiveToType" minOccurs="0" maxOccurs="1" />
+      <xs:element name="StorageInstructions" type="xs:string" minOccurs="0" maxOccurs="1" />
+      <xs:element name="WineMaker" type="xs:string" minOccurs="0" maxOccurs="1" />
+      <xs:element name="AgentName" type="xs:string" minOccurs="0" maxOccurs="1" />
+      <xs:element name="VinificationDetails" type="xs:string" minOccurs="0" maxOccurs="1" />
+      <xs:element name="History" type="xs:string" minOccurs="0" maxOccurs="1" />
+      <xs:element name="RegionalInformation" type="xs:string" minOccurs="0" maxOccurs="1" />
+    </xs:sequence>
+    <xs:attribute name="Domain" type="DomainType" />
+  </xs:complexType>
+  <xs:complexType name="AlcoholExclusiveToType">
+    <xs:simpleContent>
+      <xs:extension base="xs:string">
+        <xs:attribute name="Domain" type="DomainType" />
+      </xs:extension>
+    </xs:simpleContent>
+  </xs:complexType>
+  <xs:complexType name="AlcoholType">
+    <xs:sequence>
+      <xs:element name="Owner" type="AlcoholOwnerType" minOccurs="0" maxOccurs="unbounded" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="PackSizeType">
+    <xs:sequence>
+      <xs:element name="PackQty" type="xs:string" minOccurs="0" maxOccurs="1" />
+      <xs:element name="PackMeasure" type="xs:string" minOccurs="0" maxOccurs="1" />
+      <xs:element name="ExactMeasure" type="xs:string" minOccurs="0" maxOccurs="1" />
+      <xs:element name="Numeric" type="xs:string" minOccurs="0" maxOccurs="1" />
+      <xs:element name="MeasureId" type="xs:string" minOccurs="0" maxOccurs="1" />
+    </xs:sequence>
+    <xs:attribute name="Action" type="ActionType" />
+  </xs:complexType>
+  <xs:complexType name="NoOfUnitsType">
+    <xs:sequence>
+      <xs:element name="UnitDescription" type="xs:string" minOccurs="0" maxOccurs="1" />
+      <xs:element name="Qty" type="xs:string" minOccurs="0" maxOccurs="1" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="MultPartType">
+    <xs:sequence>
+      <xs:element name="Part" type="MultPartItem" minOccurs="0" maxOccurs="unbounded" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="MultPartItem">
+    <xs:sequence>
+      <xs:element name="PartName" type="xs:string" minOccurs="0" maxOccurs="1" />
+      <xs:element name="PartNo" type="xs:string" minOccurs="0" maxOccurs="1" />
+      <xs:element name="Ingredients" minOccurs="0" maxOccurs="1" type="IngredientsType" />
+      <xs:element name="Nutrition" type="NutritionType" minOccurs="0" maxOccurs="1" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="MultPackType">
+    <xs:sequence>
+      <xs:element name="MultiType" type="xs:string" minOccurs="1" maxOccurs="1" />
+      <xs:element name="Item" type="MultPackItemType" minOccurs="0" maxOccurs="unbounded" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="MultPackItemType">
+    <xs:sequence>
+      <xs:element name="ItemCode" type="xs:string" />
+      <xs:element name="ItemQty" type="xs:string" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="IngredientsType">
+    <xs:sequence>
+      <xs:element name="Ingredient" type="IngredientType" minOccurs="0" maxOccurs="unbounded" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="IngredientType">
+    <xs:simpleContent>
+      <xs:extension base="xs:string">
+        <xs:attribute name="Order" type="xs:positiveInteger" />
+      </xs:extension>
+    </xs:simpleContent>
+  </xs:complexType>
+  <xs:complexType name="NutritionType">
+    <xs:sequence>
+      <xs:element name="Element" type="NutritionElementType" minOccurs="0" maxOccurs="unbounded" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="NutritionElementType">
+    <xs:sequence>
+      <xs:element name="Name" type="xs:string" minOccurs="1" maxOccurs="1" />
+      <xs:element name="Portion" type="NutritionElementPortionType" minOccurs="0" maxOccurs="unbounded" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="NutritionElementPortionType">
+    <xs:sequence>
+      <xs:element name="Size" type="xs:string" minOccurs="1" maxOccurs="1" />
+      <xs:element name="Amount" type="xs:string" minOccurs="1" maxOccurs="1" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="NutrientType">
+    <xs:sequence>
+      <xs:element name="Text" type="xs:string" minOccurs="0" maxOccurs="1" />
+      <xs:element name="Code" type="xs:string" minOccurs="0" maxOccurs="1" />
+      <xs:element name="AsSold" type="xs:string" minOccurs="0" maxOccurs="1" />
+      <xs:element name="AsMadeUp" type="xs:string" minOccurs="0" maxOccurs="1" />
+      <xs:element name="AsMadeUpQualifier" type="xs:string" minOccurs="0" maxOccurs="1" />
+      <xs:element name="PerRecommendedServing" type="xs:string" minOccurs="0" maxOccurs="1" />
+      <xs:element name="RecommendedServingSize" type="xs:string" maxOccurs="1" minOccurs="0" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="NutrientValuesType">
+    <xs:sequence>
+      <xs:element name="Nutrient" type="NutrientType" maxOccurs="unbounded" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:simpleType name="MessageId">
+    <xs:restriction base="xs:string">
+      <xs:pattern value="\{{0,1}[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}\}{0,1}" />
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:complexType name="ExtendedAttributeValueType">
+    <xs:sequence>
+      <xs:element name="Id" type="xs:integer" minOccurs="1" maxOccurs="1" />
+      <xs:element name="Name" type="xs:string" minOccurs="1" maxOccurs="1" />
+      <xs:element name="Value" type="xs:string" maxOccurs="1" minOccurs="1" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="ExtendedAttributeValuesType">
+    <xs:sequence>
+      <xs:element name="ExtendedAttributeValue" type="ExtendedAttributeValueType" maxOccurs="unbounded" />
+    </xs:sequence>
+  </xs:complexType>
+  <!-- simple\generic types -->
+  <xs:complexType name="InlineObjectContentType">
+    <xs:simpleContent>
+      <xs:extension base="xs:base64Binary" />
+    </xs:simpleContent>
+  </xs:complexType>
+  <xs:complexType name="UrlObjectContentType">
+    <xs:simpleContent>
+      <xs:extension base="xs:anyURI" />
+    </xs:simpleContent>
+  </xs:complexType>
+  <xs:complexType name="GroupType">
+    <xs:sequence>
+      <xs:element name="Items" type="ItemsType" minOccurs="1" maxOccurs="unbounded" />
+    </xs:sequence>
+    <xs:attribute name="Id" type="xs:short" use="required" />
+    <xs:attribute name="Name" type="GroupNameType" use="required" />
+  </xs:complexType>
+  <xs:simpleType name="GroupNameType">
+    <xs:restriction base="xs:string">
+      <xs:maxLength value="50" />
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:complexType name="ItemsType">
+    <xs:sequence>
+      <xs:element name="Item" type="ItemType" maxOccurs="unbounded" minOccurs="1" />
+    </xs:sequence>
+    <xs:attribute name="Id" type="xs:short" use="required" />
+    <xs:attribute name="Name" type="ItemsNameType" use="required" />
+  </xs:complexType>
+  <xs:simpleType name="ItemsNameType">
+    <xs:restriction base="xs:string">
+      <xs:maxLength value="50" />
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:complexType name="ItemType">
+    <xs:sequence>
+      <xs:element name="Name" type="ItemNameType" minOccurs="0" maxOccurs="1" />
+      <xs:element name="Value" type="ItemValueType" minOccurs="0" maxOccurs="1" />
+      <xs:element name="Text" type="xs:string" minOccurs="0" maxOccurs="1" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="ItemNameType">
+    <xs:simpleContent>
+      <xs:extension base="ItemNameValueType">
+        <xs:attribute name="Id" type="xs:positiveInteger" use="required" />
+      </xs:extension>
+    </xs:simpleContent>
+  </xs:complexType>
+  <xs:simpleType name="ItemNameValueType">
+    <xs:restriction base="xs:string">
+      <xs:maxLength value="100" />
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:complexType name="ItemValueType">
+    <xs:simpleContent>
+      <xs:extension base="ItemValueValueType">
+        <xs:attribute name="Id" type="xs:positiveInteger" use="required" />
+        <xs:attribute name="Code" type="xs:string" use="optional" />
+      </xs:extension>
+    </xs:simpleContent>
+  </xs:complexType>
+  <xs:simpleType name="ItemValueValueType">
+    <xs:restriction base="xs:string">
+      <xs:maxLength value="100" />
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:complexType name="SimpleTypesType">
+    <xs:sequence>
+      <xs:element name="Group" type="GroupType" minOccurs="1" maxOccurs="unbounded" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="ResourceType">
+    <xs:sequence>
+      <xs:any namespace="##targetNamespace" minOccurs="0" maxOccurs="unbounded" processContents="skip" />
+    </xs:sequence>
+    <xs:attribute name="UsageId" type="xs:short" use="required" />
+    <xs:attribute name="Usage" type="xs:string" use="required" />
+    <xs:attribute name="MimeType" type="xs:string" use="required" />
+  </xs:complexType>
+  <xs:complexType name="ResourcesType">
+    <xs:sequence>
+      <xs:element name="Resource" type="ResourceType" minOccurs="1" maxOccurs="unbounded" />
+    </xs:sequence>
+  </xs:complexType>
+</xs:schema>

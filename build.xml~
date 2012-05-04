@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<project name="AutomateWithAnt" default="test" basedir=".">
+
+<property name="brandbankHome" location="." />
+
+
+<target name="test">
+<path id="xjc.class.path">
+				<!--<pathelement location="${brandbankHome}//jaxb-impl-2.0.1.jar"/>-->
+				<pathelement location="${brandbankHome}//jaxb-xjc-2.0.5.jar"/>
+				
+	    </path>	
+
+<taskdef name="xjc"
+	             classname="com.sun.tools.xjc.XJCTask"
+	             classpathref="xjc.class.path" />
+
+<xjc schema="${brandbankHome}/DataImport.xsd" destdir="${brandbankHome}"
+  package="generated.com.pg.brandbank">
+
+  <produces dir="${brandbankHome}/generated.com.pg.brandbank" includes="*.java"/>
+
+</xjc>
+
+</target> 
+   
+</project>
